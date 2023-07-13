@@ -1,0 +1,9 @@
+- hosts: dev1
+  tasks:
+  - name: copy file from centos to fedora vm
+    copy:
+      src: README.md
+      dest: /home/oracle/README.md
+      owner: root
+      group: root
+      mode: 0644
