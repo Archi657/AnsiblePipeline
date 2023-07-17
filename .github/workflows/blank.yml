@@ -1,8 +1,18 @@
-- name: executing remote ssh commands using password
-  uses: appleboy/ssh-action@v0.1.10
-  with:
-    host: ${{ secrets.HOST }}
-    username: ${{ secrets.USERNAME }}
-    password: ${{ secrets.PASSWORD }}
-    port: ${{ secrets.PORT }}
-    script: whoami
+name: executing remote ssh commands using password
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up Git repository
+      uses: actions/checkout@v2
+
+    - name: Connect
+      uses: archi657/latex-action@v2
+      with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: whoami
+
