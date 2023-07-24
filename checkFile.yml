@@ -1,0 +1,23 @@
+- hosts: all
+  become: true
+  tasks:
+  #check path and ant
+  - name: Configure bash_profile file
+    ansible-builtin.lineinfile:
+      path: /home/user/.bash_profile
+      regexp: 'ant=/u01/Oracle/OSM/apache-ant-1.7.1-bin'
+      state: absent
+    check_mode: yes
+    changed_when: false
+    register: out
+
+  - debug:
+      msg: "Line already"
+    when: out.found
+  
+  - debug:
+      msg: "Modify line"
+      replace:
+        dest: /home/user/.bash_profile
+        replace: 
+    when: not out.found
