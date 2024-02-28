@@ -1,0 +1,22 @@
+
+- hosts: all
+  tasks:
+  - name: Configure bash_profile file
+    lineinfile:
+      path: /home/oracle/.bash_profile
+      regexp: '^#line added from ansible'
+      state: absent
+    check_mode: yes
+    changed_when: false
+    register: out
+
+  - debug:
+      msg: "Line already"
+    when: out.found
+  
+  - name: Modify path
+    replace:
+      dest: /home/oracle/.bash_profile
+      replace: '#line added from ansible'
+      regexp: '#add line here'
+    when: not out.found

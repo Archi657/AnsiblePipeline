@@ -1,0 +1,15 @@
+- hosts: all
+  vars:
+    cartridge: "cartrige_name"
+  tasks:
+    - name: Copy Project
+      copy:
+        src: "{{ cartridge }}"
+        dest: "/path/{{ cartridge }"
+        owner: oracle
+        group: oinstall
+        mode: 0644
+      remote_src: yes  
+    - name: Run Build
+      shell: "cd/path && 
+       ./build-cartridge.sh -d {{ cartridge }}"

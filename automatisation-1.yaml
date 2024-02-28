@@ -1,0 +1,46 @@
+# this code was made orginally to configure OSM and deploy cartriges
+# therefore it got simplyfied and sensetive information was deleted/avoied related to OSM product
+# tasks executed : check ip in group, configure files by replacing strings, adding files, excecuting bash scripts
+- hosts: all
+  tasks:
+  #check if variable is correctly setted in .bash_profile
+  - name: Configure bash_profile file
+    ansible-builtin.lineinfile:
+      path: /home/user/.bash_profile
+      regexp: 'ant=/some_path/apache-ant-version-bin'
+      state: absent
+    check_mode: yes
+    changed_when: false
+    register: out
+
+  - debug:
+      msg: "Line already"
+    when: out.found
+  # modify and add path if its not configured
+  - debug:
+      msg: "Modify line"
+      replace:
+        dest: /home/user/.bash_profile
+        replace: 'path/anv..' 
+        regexp: 'path'
+    when: not out.found
+  # add some folders
+  - name: add folder apache-ant-version-bin
+    copy:
+      src: apache-ant-version-bin
+      dest: /some/path
+      owner: user
+      group: usergroup
+      mode: 0644
+  #add ip by replacing one a text
+  - name: Modify file.properties
+    replace:
+        dest: /path/file.properties
+        replace: 'ip'
+        regexp: 'my_ip'
+    when: "'maquina1' in group_name" # not out.found
+  # (execute personalized command) 
+  - name: Deploy
+    ansible.builtin.shell:  .deploy.sh -option 1
+    args:
+      chdir: /somepath/where_script_is_avaliable

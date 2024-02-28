@@ -1,0 +1,9 @@
+- hosts: all
+  tasks:
+  - name: copy file from centos to fedora vm
+    copy:
+      src: folder_test
+      dest: /home/oracle/folder_from_ansible
+      owner: oracle
+      group: oinstall
+      mode: 0644

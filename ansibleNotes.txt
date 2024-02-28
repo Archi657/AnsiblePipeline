@@ -1,0 +1,136 @@
+https://www.youtube.com/watch?v=FPU9_KDTa8A&list=PLT98CRl2KxKEUHie1m24-wkyHpEsa4Y70&index=5
+[ANSIBLE NOTES]
+----------------------------
+Owned by redhat - OpenSource - Py based
+Paid version [ANSIBLE TOWER]
+Agentless (client) 
+connect throught SSH
+pull - push model
+-----------------------------
+[INSTALL]
+yum update -y
+yum install epel-release -y
+yum install ansible -y
+------------------------------
+cd /etc/ansible
+(ansible.cfg , hosts , roles)
+------------------------------
+vi hosts
+___________________________
+|[groupname]              |
+|46.434.543               | 
+|24.343.212               |
+|                         |
+|[groupname:vars]         |
+|ansible_user=root        |
+|ansible_password=pw123   |
+|                         |
+|_________________________|
+
+--------------------------------------
+vi ansible.cfg
+____________________________
+|host_key_checking = False |
+|__________________________|
+---------------------------------------
+ansible groupname -m ping
+ansible groupname -a "cat /etc/os-release"
+ansible-playbook file.yml
+
+[SSH-KEY]
+ls -la .ssh
+ssh-keygen -t ed25519 -C "key def"
+- /path/ansible
+- without passphrase
+ssh-copy-id -i  /ansible.pub ip
+ssh -i /path ip
+
+[github]
+ssh public key add in ssh keys
+user/.gitconfig
+---------------------------
+[git repo]
+inventory
+_________________
+|ips            |
+|... (dns names)|
+|_______________|
+
+ansible all --key-file user/.ssh/ansible -i inventory -m ping
+
+[ansible.cfg] // will overwrite the one in /etc/ansible
+_____________________________________
+|inventory = inventory                |
+|private_key_file = /user/.ssh/ansible|
+|___________________________________  |
+
+ansible all -ping
+ansible all --list-hosts
+ansible all -m gather-facts
+ 
+
+-----------------------------------------
+
+[sudo power]
+add as argument : --become --ask-become pass
+------------------------------------------
+[PLAYBOOK]
+(file.yml)
+____________________________________
+|- hosts: all                       |
+|  become: true                     |
+|  tasks:                           |
+|  - name: install apache2  package |
+|    apt: # package                 |
+|      name: apache2
+       # - "{ variable_name }"      |
+|  - name: update repo index        |
+|    apt:                           | 
+|      update_cache : yes           |
+|    when: ansible_distributipm =="Ubuntu" |
+|                               in ["Debian","other"]   
+|                                   |   
+|___________________________________|
+ansible-playbook --ask-become-pass file.yml
+
+------------------------------
+inventory file
+[group1]
+32.323.21
+32.321.32
+
+[group2]
+32321.321.3
+3232.323.12
+-------------------------------
+ 
+ansible-playbook --list-tags file.yml
+ansible-playbook --tags tagname --ask-become-pass file.yml
+-----------------------------
+[managing files]
+-name ..
+ tags..
+ copy:
+   src: dsa.html
+   dest: /var/www/html..
+   owner: root
+   group: root
+   mode: 0644
+----------------------
+name: install unzip
+package:
+  name: unizip
+name install terraform
+unarchive:
+  src: https://.....zip
+  dest: ...
+  remote_src: yes
+  mode: 0755
+  owner: root
+  group: root
+
+
+
+
+
+

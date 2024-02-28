@@ -1,0 +1,44 @@
+# this code was made orginally to configure OSM and deploy cartriges
+# therefore it got simplyfied and sensetive information was deleted/avoied related to OSM product
+- hosts: all
+  vars:
+    cartridge_password: "password123"
+  tasks:
+  - name: Configure bash_profile file # (Opcional, cambiar path de ant en .bash_profile)
+    #ansible-builtin.lineinfile:
+    lineinfile:
+      path: /home/someuser/.bash_profile
+      regexp: '^ant=/path/apache-ant-version-bin'
+      state: absent
+    check_mode: yes
+    changed_when: false
+    register: out
+  - debug:
+      msg: "Line already"
+    when: out.found
+  - name: Modify path
+    replace:
+      dest: /home/someuser/.bash_profile
+      replace: 'ant=/path/apache-ant-version-bin'
+      regexp: '#add line here'
+    when: not out.found
+
+  - name: Add folder apache-ant-version-bin # (add folders needed)
+    copy:
+      src: apache-ant-version-bin
+      dest: /path
+      owner: osmdev
+      group: osmedv
+      mode: 0644
+
+  - name: Modify build.propierties # (configure ip)
+    replace:
+        dest: /path/cartrige_management_tools/tools/build.properties
+        replace: 'ip'
+        regexp: 'my_ip'
+    when: "'maquina1' in group_name" 
+
+  - name: Deploy
+      shell: "cd /path/ && 
+      ant -Dpasswordinput.password={{ cartridge_password }} 
+      -lib command...."

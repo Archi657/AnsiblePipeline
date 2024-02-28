@@ -1,0 +1,6 @@
+[maquina1]
+192.168.00.00
+[maquina1:vars]
+ansible_user=user
+ansible_password=password
+
